@@ -9,6 +9,18 @@ use App\User;
 
 class UserController extends Controller
 {
+   /**
+    * @OA\Get(
+    *     path="/api/user",
+    *     operationId="/api/user",
+    *     tags={"User"},
+    *     @OA\Response(
+    *         response="200",
+    *         description="전체 유저 리스트 반환",
+    *         @OA\JsonContent()
+    *     )
+    * )
+    */
     public function index(Request $request)
     {
         $users = User::all();
@@ -16,6 +28,18 @@ class UserController extends Controller
         return response()->json($users, Response::HTTP_OK);
     }
 
+   /**
+    * @OA\Post(
+    *     path="/api/user",
+    *     operationId="/api/user",
+    *     tags={"User"},
+    *     @OA\Response(
+    *         response="200",
+    *         description="전체 유저 리스트 반환",
+    *         @OA\JsonContent()
+    *     )
+    * )
+    */
     public function create(Request $request)
     {
         $user = new User();
