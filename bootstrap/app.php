@@ -21,9 +21,11 @@ $app = new Laravel\Lumen\Application(
     dirname(__DIR__)
 );
 
-// $app->withFacades();
+$app->withFacades();
 
-// $app->withEloquent();
+$app->withEloquent();
+
+$app->configure('swagger-lume');
 
 /*
 |--------------------------------------------------------------------------
@@ -79,6 +81,7 @@ $app->singleton(
 // $app->register(App\Providers\AppServiceProvider::class);
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
+$app->register(SwaggerLume\ServiceProvider::class);
 
 /*
 |--------------------------------------------------------------------------

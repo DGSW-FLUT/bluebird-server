@@ -3,3 +3,7 @@
 Homestead.json
 Homestead.yaml
 .env
+
+public/swagger-ui-assets
+resources/views/vendor/swagger-lume/index.blade.php
+storage/api-docs
