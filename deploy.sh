@@ -7,4 +7,3 @@ git pull origin master --force
 php artisan swagger-lume:publish
 php artisan swagger-lume:generate
 
-git reset --hard
