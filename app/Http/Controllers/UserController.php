@@ -53,7 +53,7 @@ class UserController extends Controller
         $user->job = trim($input['job']);
         $user->level = trim($input['level']);
         $user->phone_number = trim($input['phoneNumber']);
-        
+
         $user->save();
 
         return response()->json($user, Response::HTTP_CREATED);
@@ -116,16 +116,16 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
 
-        return response()->json([], Response::HTTP_NO_CONTENT);
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 
-    public function count(Request $request) 
+    public function count(Request $request)
     {
         $count = DB::table('users')->select(DB::raw('level, COUNT(*) as count'))
                                    ->where('deleted_at', '=', null)
                                    ->groupBy('level')
                                    ->get();
-        
+
         return response()->json($count);
     }
 
