@@ -8,7 +8,7 @@ class Controller extends BaseController
 {
     /**
      * @OA\Info(
-     *   title="Bluebird API",
+     *   title="Bluebird API Specifications",
      *   version="1.0",
      *   @OA\Contact(
      *     email="dgswflut@gmail.com",
