@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\Validator;
+use Illuminate\Support\Facades\DB;
 use App\User;
 
 class UserController extends Controller
@@ -116,5 +117,25 @@ class UserController extends Controller
         $user->delete();
 
         return response()->json([], Response::HTTP_NO_CONTENT);
+    }
+
+    public function count(Request $request) 
+    {
+        $count = DB::table('users')->select(DB::raw('level, COUNT(*) as count'))
+                                   ->where('deleted_at', '=', null)
+                                   ->groupBy('level')
+                                   ->get();
+        
+        return response()->json($count);
+    }
+
+    public function userChange(Request $request)
+    {
+        $increase = DB::table('users')->select(DB::raw('COUNT(*) as increase'))
+                                      ->where('created_at', '>', '2019-06-10')
+                                      ->first();
+        // echo($increase);
+        echo($increase->increase);
+        return response()->json($increase);
     }
 }
