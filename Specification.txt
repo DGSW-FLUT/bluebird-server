@@ -1,0 +1,33 @@
+DB
+
+User ( soft delete )
+  name
+  birth
+  mail_number
+  addr
+  job
+  level
+  phone_number
+  created_at
+  deleted_at
+
+Message
+  idx
+  text
+
+Snapshot
+  idx
+  file_path < dump_sql_path 
+  created_at
+
+--- API ---
+
+User 
+  Single CR
+  Group UD
+  findCountByLevel
+  findPM
+  SendMessage
+  
+Message
+  CRUD
