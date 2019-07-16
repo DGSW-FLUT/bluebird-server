@@ -129,13 +129,22 @@ class UserController extends Controller
         return response()->json($count);
     }
 
-    public function userChange(Request $request)
+    public function search(Request $request) {
+        echo($request->get('name'));
+
+        return response()->json();
+    }
+
+    public function showChange(Request $request)
     {
         $increase = DB::table('users')->select(DB::raw('COUNT(*) as increase'))
-                                      ->where('created_at', '>', '2019-06-10')
+                                      ->where('created_at', '>', date("Y-01-01"))
                                       ->first();
-        // echo($increase);
-        echo($increase->increase);
-        return response()->json($increase);
+
+        $decrease = DB::table('users')->select(DB::raw('COUNT(*) as decrease'))
+                                      ->where('deleted_at', '>', date("Y-01-01"))
+                                      ->first();
+
+        return response()->json(["increase" => $increase->increase, "decrease" => $decrease->decrease]);
     }
 }
