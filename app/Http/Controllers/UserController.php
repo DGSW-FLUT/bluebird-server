@@ -137,9 +137,9 @@ class UserController extends Controller
         $query = "SELECT * FROM users WHERE created_at >= '".$from."' AND created_at <= '".$to."'";
 
         if (!empty($request->get('name')))
-            $query += " AND name LIKE ".$request->get('name');
+            $query .= " AND name LIKE '%".$request->get('name')."%'";
         if (!empty($request->get('level')))
-            $query += " AND level LIKE ".$request->get('level');
+            $query .= " AND level LIKE '%".$request->get('level')."%'";
         
         $result = DB::select(DB::raw($query));
 
