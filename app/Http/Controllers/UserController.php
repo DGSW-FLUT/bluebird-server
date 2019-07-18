@@ -58,7 +58,18 @@ class UserController extends Controller
 
         return response()->json($user, Response::HTTP_CREATED);
     }
-
+    /**
+    * @OA\Post(
+    *     path="/api/user",
+    *     operationId="/api/user",
+    *     tags={"User"},
+    *     @OA\Response(
+    *         response="200",
+    *         description="전체 유저 리스트 반환",
+    *         @OA\JsonContent()
+    *     )
+    * )
+    */
     public function show(Request $request, $id)
     {
         $user = User::findOrFail($id);
@@ -143,7 +154,7 @@ class UserController extends Controller
         
         $result = DB::select(DB::raw($query));
 
-        return response()->json($result);
+        return response()->json($result, Response::HTTP_OK);
     }
 
     public function showChange(Request $request)
@@ -156,6 +167,6 @@ class UserController extends Controller
                                       ->where('deleted_at', '>', date("Y-01-01"))
                                       ->first();
 
-        return response()->json(["increase" => $increase->increase, "decrease" => $decrease->decrease]);
+        return response()->json(["increase" => $increase->increase, "decrease" => $decrease->decrease], Response::HTTP_OK);
     }
 }
