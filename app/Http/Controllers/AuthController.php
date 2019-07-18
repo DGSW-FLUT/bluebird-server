@@ -10,11 +10,6 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 
 class AuthController extends BaseController 
 {
-    public function __construct()
-    {
-        $this->middleware('jwt.auth', ['except' => 'authenticate']);
-    }
-    
     /**
      * Create a new token.
      * 
@@ -42,7 +37,7 @@ class AuthController extends BaseController
      */
     public function authenticate(Request $request) {
         // Find the user by account
-        $user = Auth::where('account', $this->request->input('account'))->first();
+        $user = Auth::where('account', $request->input('account'))->first();
         if (!$user) {
             // You wil probably have some sort of helpers or whatever
             // to make sure that you have the same response format for
@@ -53,7 +48,7 @@ class AuthController extends BaseController
             ], 400);
         }
         // Verify the password and generate the token
-        if ($user->password == $this->request->input('password')) {
+        if ($user->password == $request->input('password')) {
             return response()->json([
                 'token' => $this->jwt($user)
             ], 200);
@@ -91,6 +86,6 @@ class AuthController extends BaseController
         
         $user->save();
 
-        return response()->json($user, Response::HTTP_OK)
+        return response()->json($user, Response::HTTP_OK);
     }
 }

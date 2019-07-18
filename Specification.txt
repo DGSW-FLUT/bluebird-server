@@ -39,3 +39,6 @@ User
   
 Message
   CRUD
+
+Auth
+  CRUD
