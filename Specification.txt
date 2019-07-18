@@ -1,6 +1,7 @@
 DB
 
 User ( soft delete )
+  id
   name
   birth
   mail_number
@@ -11,12 +12,19 @@ User ( soft delete )
   created_at
   deleted_at
 
+Auth
+  id
+  account
+  password
+
 Message
-  idx
-  text
+  id
+  content
+  created_at
+  updated_at
 
 Snapshot
-  idx
+  id
   file_path < dump_sql_path 
   created_at
 
@@ -30,4 +38,7 @@ User
   SendMessage
   
 Message
+  CRUD
+
+Auth
   CRUD
