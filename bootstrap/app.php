@@ -94,6 +94,10 @@ $app->register(SwaggerLume\ServiceProvider::class);
 |
 */
 
+$app->routeMiddleware([
+    'jwt.auth' => App\Http\Middleware\JwtMiddleware::class,
+]);
+
 $app->router->group([
     'namespace' => 'App\Http\Controllers',
 ], function ($router) {
