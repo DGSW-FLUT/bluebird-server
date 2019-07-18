@@ -10,6 +10,7 @@ class WebhookController extends Controller
 {
     public function deploy(Request $request)
     {
+
         $process = new Process('cd ' . base_path() . '; ./deploy.sh');
         $process->run(function ($type, $buffer) {
             echo $buffer;
