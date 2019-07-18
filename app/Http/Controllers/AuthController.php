@@ -10,6 +10,11 @@ use Laravel\Lumen\Routing\Controller as BaseController;
 
 class AuthController extends BaseController 
 {
+    public function __construct()
+    {
+        $this->middleware('jwt.auth', ['except' => 'authenticate']);
+    }
+    
     /**
      * Create a new token.
      * 
@@ -77,7 +82,7 @@ class AuthController extends BaseController
         return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 
-    public function register(Request $request){
+    public function create(Request $request){
         $input = $request->only(['account', 'password']);
         $user = new Auth();
 
@@ -86,6 +91,6 @@ class AuthController extends BaseController
         
         $user->save();
 
-        return response()->json($user, Response::HTTP_OK);
+        return response()->json($user, Response::HTTP_OK)
     }
 }

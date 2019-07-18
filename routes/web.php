@@ -23,13 +23,16 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             $router->get('/{id}', 'MessageController@show');
             $router->patch('/{id}', 'MessageController@update');
             $router->delete('/{id}', 'MessageController@destroy');
+        });      
+        $router->group(['prefix' => 'auth'], function () use ($router) {
+            $router->post('/login',
+            [
+                'uses' => 'AuthController@authenticate'
+            ]);
+            $router->post('/', 'AuthController@create');
+            $router->patch('/{id}', 'AuthController@update');
+            $router->delete('/{id}', 'AuthController@destroy');
         });
     });
 
-    $router->group(['prefix' => 'auth'], function () use ($router) {
-        $router->post('/login',
-        [
-            'uses' => 'AuthController@authenticate'
-        ] );
-    });
 });
