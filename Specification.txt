@@ -1,5 +1,9 @@
 DB
 
+Admin
+  id
+  pw
+
 User ( soft delete )
   id
   name
