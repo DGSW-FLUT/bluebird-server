@@ -1,17 +1,20 @@
 <?php
+
 namespace App\Http\Middleware;
+
 use Closure;
 use Exception;
 use App\Auth;
 use Firebase\JWT\JWT;
 use Firebase\JWT\ExpiredException;
+
 class JwtMiddleware
 {
     public function handle($request, Closure $next, $guard = null)
     {
         $token = $request->bearerToken();
-        
-        if(!$token) {
+
+        if (!$token) {
             // Unauthorized response if token not there
             return response()->json([
                 'error' => 'Token not provided.'
@@ -19,11 +22,12 @@ class JwtMiddleware
         }
         try {
             $credentials = JWT::decode($token, env('JWT_SECRET'), ['HS256']);
-        } catch(ExpiredException $e) {
+        } catch (ExpiredException $e) {
             return response()->json([
                 'error' => 'Provided token is expired.'
             ], 400);
-        } catch(Exception $e) {
+        } catch (Exception $e) {
+            echo $e;
             return response()->json([
                 'error' => 'An error while decoding token.'
             ], 400);
