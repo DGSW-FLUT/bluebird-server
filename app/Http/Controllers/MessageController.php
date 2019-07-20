@@ -98,6 +98,7 @@ class MessageController extends Controller
             return response()->json(["status" => 500, "message" => 'SMS전송 오류'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return response()->json(["status" => 200, "message" => "SMS 전송 성공"], Response::HTTP_OK);
+        return response()->json($result);
+        // return response()->json(["status" => 200, "message" => "SMS 전송 성공"], Response::HTTP_OK);
     }
 }
