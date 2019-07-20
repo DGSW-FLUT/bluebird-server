@@ -28,7 +28,7 @@ class JwtMiddleware
             ], 400);
         } catch (Exception $e) {
             return response()->json([
-                'error' => $e
+                'error' => json_encode($e)
             ], 400);
         }
         $user = Auth::find($credentials->sub);
