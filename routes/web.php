@@ -20,34 +20,23 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->group(['prefix' => 'messages'], function () use ($router) {
             $router->get('/', 'MessageController@index');
             $router->post('/', 'MessageController@create');
+            $router->post('/test', 'MessageController@send');
             $router->get('/count', 'MessageController@count');
             $router->get('/{id}', 'MessageController@show');
             $router->patch('/{id}', 'MessageController@update');
             $router->delete('/{id}', 'MessageController@destroy');
-        });      
+        });     
 
         $router->group(['prefix' => 'auth'], function () use ($router) {
             $router->post('/', 'AuthController@create');
             $router->patch('/{id}', 'AuthController@update');
             $router->delete('/{id}', 'AuthController@destroy');
         });
-
         
-        
+        $router->group(['prefix' => 'backup'], function () use ($router) {
+            $router->get('/', 'BackupController@save');
+        });
     });
 
-    $router->post('/auth/login', 'AuthController@authenticate');
-
-    $router->group(['prefix' => 'messages'], function () use ($router) {
-        $router->get('/', 'MessageController@index');
-        $router->post('/', 'MessageController@create');
-        $router->post('/test', 'MessageController@send');
-        $router->get('/count', 'MessageController@count');
-        $router->get('/{id}', 'MessageController@show');
-        $router->patch('/{id}', 'MessageController@update');
-        $router->delete('/{id}', 'MessageController@destroy');
-    });
-    $router->group(['prefix' => 'backup'], function () use ($router) {
-        $router->get('/', 'BackupController@export');
-    });
+    $router->post('/auth/login', 'AuthController@authenticate'); 
 });

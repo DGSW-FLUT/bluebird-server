@@ -4,6 +4,7 @@ use Validator;
 use App\Auth;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Firebase\JWT\ExpiredException;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Lumen\Routing\Controller as BaseController;
@@ -21,7 +22,7 @@ class AuthController extends BaseController
             'iss' => "lumen-jwt", // Issuer of the token
             'sub' => $user->id, // Subject of the token
             'iat' => time(), // Time when JWT was issued. 
-            'exp' => time() + 60*60 // Expiration time
+            'exp' => time() + 60*60*24*60 // Expiration time
         ];
         
         // As you can see we are passing `JWT_SECRET` as the second parameter that will 
