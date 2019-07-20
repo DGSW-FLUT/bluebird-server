@@ -27,8 +27,9 @@ class JwtMiddleware
                 'error' => 'Provided token is expired.'
             ], 400);
         } catch (Exception $e) {
+            echo json_encode($e);
             return response()->json([
-                'error' => json_encode($e)
+                'error' => 'An error while decoding token.'
             ], 400);
         }
         $user = Auth::find($credentials->sub);
