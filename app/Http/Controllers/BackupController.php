@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\BackupUser;
 use App\User;
 use App\Snapshot;
 use App\Exports\UsersExport;
@@ -30,13 +31,25 @@ class BackupController extends Controller
     }
 
     public function rollback(Request $request, $id){
-        $export = new UsersExport($id);
-
-        $users = $export->collection();
+        $dump_data = Snapshot::findOrFail($id);
+        $dump_array = (array)json_decode($dump_data->dump_data);
 
         User::truncate();
 
-        foreach($users as $user){
+        foreach($dump_array as $row){
+            $user = new BackupUser();
+            $user->id = $row->id;
+            $user->name = $row->name;
+            $user->birth = $row->birth;
+            $user->zip_code = $row->zip_code;
+            $user->address = $row->address;
+            $user->job = $row->job;
+            $user->level = $row->level;
+            $user->phone_number = $row->phone_number;
+            $user->created_at = $row->created_at;
+            $user->updated_at = $row->updated_at;
+            $user->deleted_at = $row->deleted_at;
+            
             $user->save();
         }
 
@@ -55,6 +68,6 @@ class BackupController extends Controller
 
         $snapshot->destroy();
 
-        return response()->json(null, Response::HTTP_NO_CONTENT)
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 }
