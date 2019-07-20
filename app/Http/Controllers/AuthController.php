@@ -4,6 +4,7 @@ use Validator;
 use App\Auth;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Firebase\JWT\ExpiredException;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Lumen\Routing\Controller as BaseController;
