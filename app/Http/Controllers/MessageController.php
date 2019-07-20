@@ -95,10 +95,15 @@ class MessageController extends Controller
         $result = file_get_contents($url, false, $context);
 
         if ($result === FALSE) {
-            return response()->json(["status" => 500, "message" => 'SMS전송 오류'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(["status" => 500, "message" => 'SMS SEND ERROR'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        return response()->json($result);
-        // return response()->json(["status" => 200, "message" => "SMS 전송 성공"], Response::HTTP_OK);
+        $resultCode = json_decode($result, true)["header"]["resultCode"];
+
+        if ($resultCode != 0) {
+            return response()->json(["status" => 500, "message" => '[CODE]'.$resultCode.' SMS SEND ERROR'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return response()->json(json_encode(["status" => 200, "message" => "SMS SEND SUCCESS"], JSON_UNESCAPED_UNICODE), Response::HTTP_OK);
     }
 }
