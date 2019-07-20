@@ -2,6 +2,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Exception;
 
 class CorsMiddleware
 {
@@ -28,9 +29,12 @@ class CorsMiddleware
         }
 
         $response = $next($request);
-        foreach($headers as $key => $value)
-        {
-            $response->header($key, $value);
+
+        if(strpos($response->headers->get('content-type'), 'image') === false) {
+            foreach($headers as $key => $value)
+            {
+                $response->headers->set($key, $value);
+            }
         }
 
         return $response;
