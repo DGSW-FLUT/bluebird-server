@@ -82,7 +82,7 @@ $app->singleton(
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 $app->register(SwaggerLume\ServiceProvider::class);
-
+$app->register(Maatwebsite\Excel\ExcelServiceProvider::class);
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
@@ -93,6 +93,10 @@ $app->register(SwaggerLume\ServiceProvider::class);
 | can respond to, as well as the controllers that may handle them.
 |
 */
+
+$app->routeMiddleware([
+    'jwt.auth' => App\Http\Middleware\JwtMiddleware::class,
+]);
 
 $app->router->group([
     'namespace' => 'App\Http\Controllers',

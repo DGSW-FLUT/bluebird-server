@@ -53,12 +53,23 @@ class UserController extends Controller
         $user->job = trim($input['job']);
         $user->level = trim($input['level']);
         $user->phone_number = trim($input['phoneNumber']);
-
+        
         $user->save();
 
         return response()->json($user, Response::HTTP_CREATED);
     }
-
+    /**
+    * @OA\Post(
+    *     path="/api/user",
+    *     operationId="/api/user",
+    *     tags={"User"},
+    *     @OA\Response(
+    *         response="200",
+    *         description="전체 유저 리스트 반환",
+    *         @OA\JsonContent()
+    *     )
+    * )
+    */
     public function show(Request $request, $id)
     {
         $user = User::findOrFail($id);
@@ -116,23 +127,34 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
 
-        return response()->json(null, Response::HTTP_NO_CONTENT);
+        return response()->json([], Response::HTTP_NO_CONTENT);
     }
 
-    public function count(Request $request)
+    public function count(Request $request) 
     {
         $count = DB::table('users')->select(DB::raw('level, COUNT(*) as count'))
                                    ->where('deleted_at', '=', null)
                                    ->groupBy('level')
                                    ->get();
-
+        
         return response()->json($count);
     }
 
     public function search(Request $request) {
-        echo($request->get('name'));
 
-        return response()->json();
+        $from = $request->input('from', '0000-00-00');
+        $to = $request->input('to', '9999-99-99');
+
+        $query = "SELECT * FROM users WHERE created_at >= '".$from."' AND created_at <= '".$to."'";
+
+        if (!empty($request->get('name')))
+            $query .= " AND name LIKE '%".$request->get('name')."%'";
+        if (!empty($request->get('level')))
+            $query .= " AND level LIKE '%".$request->get('level')."%'";
+        
+        $result = DB::select(DB::raw($query));
+
+        return response()->json($result, Response::HTTP_OK);
     }
 
     public function showChange(Request $request)
@@ -145,6 +167,6 @@ class UserController extends Controller
                                       ->where('deleted_at', '>', date("Y-01-01"))
                                       ->first();
 
-        return response()->json(["increase" => $increase->increase, "decrease" => $decrease->decrease]);
+        return response()->json(["increase" => $increase->increase, "decrease" => $decrease->decrease], Response::HTTP_OK);
     }
 }

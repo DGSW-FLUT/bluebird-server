@@ -65,4 +65,39 @@ class MessageController extends Controller
 
         return response()->json(['count' => $count]);
     }
+
+    public function send(Request $request)
+    {
+        $message = $request->input('message');
+        $recipients = $request->input('recipients');
+
+        $recipientNos = array();
+
+        foreach ($recipients as $recipient)
+            array_push($recipientNos, array("recipientNo"=>$recipient));
+
+        $url = "https://api-sms.cloud.toast.com/sms/v2.1/appKeys/".env('MESSAGE_API_KEY').'/sender/sms';
+        $data = array('body' => $message, 
+                      'sendNo' => env('MESSAGE_SEND_NUMBER'),
+                      'recipientList' => $recipientNos
+                    );
+
+        $options = array(
+            'http' => array(
+                'header'  => "Content-Type: application/json;charset=UTF-8\r\n",
+                'method'  => 'POST',
+                'content' => json_encode($data)
+            )
+        );
+
+        $context  = stream_context_create($options);
+
+        $result = file_get_contents($url, false, $context);
+
+        if ($result === FALSE) {
+            return response()->json(["status" => 500, "message" => 'SMS전송 오류'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return response()->json(["status" => 200, "message" => "SMS 전송 성공"], Response::HTTP_OK);
+    }
 }
