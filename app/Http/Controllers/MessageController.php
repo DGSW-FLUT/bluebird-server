@@ -61,7 +61,7 @@ class MessageController extends Controller
 
     public function count(Request $request)
     {
-        $count = DB::table('messages')->count();
+        $count = Message::all()->count();
 
         return response()->json(['count' => $count]);
     }
