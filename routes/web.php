@@ -34,7 +34,11 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         });
         
         $router->group(['prefix' => 'backup'], function () use ($router) {
-            $router->get('/', 'BackupController@save');
+            $router->get('/save', 'BackupController@save');
+            $router->get('/', 'BackupController@show');
+            $router->get('/{id}', 'BackupController@export');
+            $router->get('/rollback/{id}', 'BackupController@rollback');
+            $router->delete('/{id}', 'BackupController@destroy');
         });
     });
 

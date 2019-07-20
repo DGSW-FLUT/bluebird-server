@@ -3,17 +3,32 @@
 namespace App\Exports;
 
 use App\User;
+use App\Snapshot;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class UsersExport implements FromCollection, WithHeadings
+class UsersExport implements FromCollection, WithHeadings 
 {
+    private $idx;
+
+    public function __construct($idx)
+    {
+        $this->idx = $idx;
+    }
+
     /**
     * @return \Illuminate\Support\Collection
     */
     public function collection()
     {
-        return User::all();
+        $dump_data = Snapshot::findOrFail($this->idx);
+
+        $dump_array = (array)json_decode($dump_data->dump_data);
+
+        $collection = User::hydrate($dump_array);
+        $collection = $collection->flatten();
+        
+        return $collection;
     }
 
     public function headings(): array
@@ -28,7 +43,8 @@ class UsersExport implements FromCollection, WithHeadings
             '등급',
             '전화번호',
             '생성일',
-            '수정일'
+            '수정일',
+            '삭제일'
         ];
     }
 }
