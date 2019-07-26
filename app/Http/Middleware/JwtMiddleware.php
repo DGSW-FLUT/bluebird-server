@@ -20,24 +20,6 @@ class JwtMiddleware
                 'error' => 'Token not provided.'
             ], 401);
         }
-<<<<<<< HEAD
-
-        // bluebird로 임시적으로 품
-        if (!strcmp($token, "bluebird"))
-            return $next($request);
-
-        try {
-            $credentials = JWT::decode($token, env('JWT_SECRET'), ['HS256']);
-        } catch (ExpiredException $e) {
-            return response()->json([
-                'error' => 'Provided token is expired.'
-            ], 400);
-        } catch (Exception $e) {
-            echo $e;
-            return response()->json([
-                'error' => 'An error while decoding token.'
-            ], 400);
-=======
         if($token != 'bluebird'){
             try {
                 $credentials = JWT::decode($token, env('JWT_SECRET'), ['HS256']);
@@ -54,7 +36,6 @@ class JwtMiddleware
             $user = Auth::find($credentials->sub);
             // Now let's put the user in the request class so that you can grab it from there
             $request->auth = $user;
->>>>>>> master
         }
         return $next($request);
     }
