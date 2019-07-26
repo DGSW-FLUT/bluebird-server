@@ -74,7 +74,7 @@ class MessageController extends Controller
         $recipientNos = array();
 
         foreach ($recipients as $recipient)
-            array_push($recipientNos, array("recipientNo"=>$recipient));
+            array_push($recipientNos, array("recipientNo"=>str_replace("-","",$recipient)));
 
         $url = "https://api-sms.cloud.toast.com/sms/v2.1/appKeys/".env('MESSAGE_API_KEY').'/sender/sms';
         $data = array('body' => $message, 
