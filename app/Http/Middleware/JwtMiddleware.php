@@ -7,6 +7,7 @@ use Exception;
 use App\Auth;
 use Firebase\JWT\JWT;
 use Firebase\JWT\ExpiredException;
+use Illuminate\Http\Response;
 
 class JwtMiddleware
 {
