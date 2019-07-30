@@ -19,7 +19,8 @@ class BackupController extends Controller
 
         $user_data = User::withTrashed()->get();
 
-        $snapshot->dump_data = json_encode($user_data);
+        $dump_data = openssl_encrypt(json_encode($user_data), 'aes-256-cbc', env('SECRET_KEY'), false, str_repeat(chr(0), 16));
+        $snapshot->dump_data = strval($dump_data);
 
         $snapshot->save();
 
@@ -32,7 +33,9 @@ class BackupController extends Controller
 
     public function rollback(Request $request, $id){
         $dump_data = Snapshot::findOrFail($id);
-        $dump_array = (array)json_decode($dump_data->dump_data);
+
+        $data = openssl_decrypt($dump_data->dump_data, 'aes-256-cbc', env('SECRET_KEY'), false, str_repeat(chr(0), 16));
+        $dump_array = (array)json_decode($data);
 
         User::truncate();
 
@@ -60,6 +63,10 @@ class BackupController extends Controller
     public function show(Request $request){
         $snapshots = Snapshot::all();
 
+        foreach($snapshots as $snapshot){
+            $data = openssl_decrypt($snapshot->dump_data, 'aes-256-cbc', env('SECRET_KEY'), false, str_repeat(chr(0), 16));
+            $snapshot->dump_data = $data;
+        }
         return response()->json($snapshots, Response::HTTP_OK);
     }
 
