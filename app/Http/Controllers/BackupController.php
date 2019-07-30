@@ -11,9 +11,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class BackupController extends Controller 
+class BackupController extends Controller
 {
-    public function save(Request $request) 
+    public function save(Request $request)
     {
         $snapshot = new SnapShot();
 
@@ -54,7 +54,7 @@ class BackupController extends Controller
             $user->created_at = $row->created_at;
             $user->updated_at = $row->updated_at;
             $user->deleted_at = $row->deleted_at;
-            
+
             $user->save();
         }
 
@@ -75,7 +75,7 @@ class BackupController extends Controller
     public function destroy(Request $request, $id){
         $snapshot = Snapshot::findOrFail($id);
 
-        $snapshot->destroy();
+        $snapshot->delete();
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
     }
