@@ -63,7 +63,7 @@ class AuthController extends BaseController
     public function update(Request $request){
         $user = Auth::findOrFail($request->auth->id);
 
-        $user->password = $request->input('password');
+        $user->password = password_hash($request->input('password'), PASSWORD_DEFAULT);
 
         $user->save();
 
