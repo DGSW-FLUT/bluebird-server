@@ -80,6 +80,14 @@ class AuthController extends BaseController
 
     public function create(Request $request){
         $input = $request->only(['account', 'password']);
+
+        $result = Auth::where('account', $input['account'])->first();
+        if($result){
+            return response()->json([
+                'error' => 'Account already exist.'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        
         $user = new Auth();
 
         $user->account = $input['account'];
