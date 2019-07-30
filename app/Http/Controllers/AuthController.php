@@ -46,18 +46,18 @@ class AuthController extends BaseController
             // below respose for now.
             return response()->json([
                 'error' => 'Account does not exist.'
-            ], 400);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         // Verify the password and generate the token
-        if ($user->password == $request->input('password')) {
+        if (password_verify($request->input('password'), $user->password)) {
             return response()->json([
                 'token' => $this->jwt($user)
-            ], 200);
+            ], Response::HTTP_OK);
         }
         // Bad Request response
         return response()->json([
             'error' => 'Account or password is wrong.'
-        ], 400);
+        ], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     public function update(Request $request, $id){
@@ -83,7 +83,7 @@ class AuthController extends BaseController
         $user = new Auth();
 
         $user->account = $input['account'];
-        $user->password = $input['password'];
+        $user->password = password_hash($input['password'], PASSWORD_DEFAULT);
         
         $user->save();
 
