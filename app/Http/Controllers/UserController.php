@@ -44,15 +44,15 @@ class UserController extends Controller
     public function create(Request $request)
     {
         $user = new User();
-        $input = $request->only(['name', 'birth', 'zipCode', 'address', 'job', 'level', 'phoneNumber']);
+        $input = $request->only(['name', 'birth', 'zip_code', 'address', 'job', 'level', 'phone_number']);
 
         $user->name = trim($input['name']);
         $user->birth = trim($input['birth']);
-        $user->zip_code = trim($input['zipCode']);
+        $user->zip_code = trim($input['zip_code']);
         $user->address = trim($input['address']);
         $user->job = trim($input['job']);
         $user->level = trim($input['level']);
-        $user->phone_number = trim($input['phoneNumber']);
+        $user->phone_number = trim($input['phone_number']);
         
         $user->save();
 
@@ -80,7 +80,7 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
-        $input = $request->only(['name', 'birth', 'zipCode', 'address', 'job', 'level', 'phoneNumber']);
+        $input = $request->only(['name', 'birth', 'zip_code', 'address', 'job', 'level', 'phone_number']);
 
         if (parent::isDefined($input, 'name'))
         {
@@ -92,9 +92,9 @@ class UserController extends Controller
             $user->birth = trim($input['birth']);
         }
 
-        if (parent::isDefined($input, 'zipCode'))
+        if (parent::isDefined($input, 'zip_code'))
         {
-            $user->zip_code = trim($input['zipCode']);
+            $user->zip_code = trim($input['zip_code']);
         }
 
         if (parent::isDefined($input, 'address'))
@@ -112,9 +112,9 @@ class UserController extends Controller
             $user->level = trim($input['level']);
         }
 
-        if (parent::isDefined($input, 'phoneNumber'))
+        if (parent::isDefined($input, 'phone_number'))
         {
-            $user->phone_number = trim($input['phoneNumber']);
+            $user->phone_number = trim($input['phone_number']);
         }
 
         $user->save();
@@ -137,7 +137,7 @@ class UserController extends Controller
                                    ->groupBy('level')
                                    ->get();
         
-        return response()->json($count);
+        return response()->json($count, Response::HTTP_OK);
     }
 
     public function search(Request $request) {
