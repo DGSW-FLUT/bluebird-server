@@ -18,7 +18,7 @@ class JwtMiddleware
             // Unauthorized response if token not there
             return response()->json([
                 'error' => 'Token not provided.'
-            ], 401);
+            ], Response::HTTP_UNAUTHORIZED);
         }
         if($token != 'bluebird'){
             try {
@@ -26,12 +26,11 @@ class JwtMiddleware
             } catch (ExpiredException $e) {
                 return response()->json([
                     'error' => 'Provided token is expired.'
-                ], 400);
+                ], Response::HTTP_UNAUTHORIZED);
             } catch (Exception $e) {
-                echo $e;
                 return response()->json([
                     'error' => 'An error while decoding token.'
-                ], 400);
+                ], Response::HTTP_UNAUTHORIZED);
             }
             $user = Auth::find($credentials->sub);
             // Now let's put the user in the request class so that you can grab it from there
