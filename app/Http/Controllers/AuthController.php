@@ -60,8 +60,8 @@ class AuthController extends BaseController
         ], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
-    public function update(Request $request, $id){
-        $user = Auth::findOrFail($id);
+    public function update(Request $request){
+        $user = Auth::findOrFail($request->auth->id);
 
         $user->password = $request->input('password');
 
@@ -70,8 +70,8 @@ class AuthController extends BaseController
         return response()->json($user, Response::HTTP_OK);
     }
 
-    public function delete(Request $request, $id){
-        $user = Auth::findOrFail($id);
+    public function delete(Request $request){
+        $user = Auth::findOrFail($request->auth->id);
         
         $user->destroy();
 

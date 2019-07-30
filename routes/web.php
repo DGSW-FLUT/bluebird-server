@@ -29,8 +29,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         $router->group(['prefix' => 'auth'], function () use ($router) {
             $router->post('/', 'AuthController@create');
-            $router->patch('/{id}', 'AuthController@update');
-            $router->delete('/{id}', 'AuthController@destroy');
+            $router->patch('/', 'AuthController@update');
+            $router->delete('/', 'AuthController@destroy');
         });
         
         $router->group(['prefix' => 'backup'], function () use ($router) {
