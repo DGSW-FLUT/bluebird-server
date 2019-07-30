@@ -24,6 +24,8 @@ class BackupController extends Controller
 
         $snapshot->save();
 
+        $snapshot->dump_data = openssl_decrypt($dump_data, 'aes-256-cbc', env('SECRET_KEY'), false, str_repeat(chr(0), 16));
+
         return response()->json($snapshot, Response::HTTP_OK);
     }
 
