@@ -20,7 +20,7 @@ class BackupController extends Controller
         $user_data = User::withTrashed()->get();
 
         $dump_data = openssl_encrypt(json_encode($user_data), 'aes-256-cbc', env('SECRET_KEY'), false, str_repeat(chr(0), 16));
-        $snapshot->dump_data = strval($dump_data);
+        $snapshot->dump_data = $dump_data;
 
         $snapshot->save();
 
