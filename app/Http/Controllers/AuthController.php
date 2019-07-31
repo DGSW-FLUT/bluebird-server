@@ -70,10 +70,10 @@ class AuthController extends BaseController
         return response()->json($user, Response::HTTP_OK);
     }
 
-    public function delete(Request $request, $id){
+    public function destroy(Request $request, $id){
         $user = Auth::findOrFail($id);
         
-        $user->destroy();
+        $user->delete();
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
     }
