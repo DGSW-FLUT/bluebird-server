@@ -97,4 +97,10 @@ class AuthController extends BaseController
 
         return response()->json($user, Response::HTTP_OK);
     }
+
+    public function index(Request $request){
+        $accounts = Auth::all();
+
+        return response()->json($accounts, Response::HTTP_OK);
+    }
 }
