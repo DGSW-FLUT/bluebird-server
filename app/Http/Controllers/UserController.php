@@ -187,12 +187,12 @@ class UserController extends Controller
     }
 
     public function checkPayment($user){
-        $nowMonth = date('m');
+        $nowMonth = date('y');
 
         if(!strcmp($user->paid_at, '')){
             $user->paid_at = 'X';
         } else {
-            $paid_at = date('m', strtotime($user->paid_at));
+            $paid_at = date('y', strtotime($user->paid_at));
             if(strcmp($paid_at, $nowMonth)){
                 $user->paid_at = 'X';
             } else {
