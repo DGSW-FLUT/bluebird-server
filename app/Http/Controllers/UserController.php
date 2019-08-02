@@ -25,22 +25,10 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $users = User::all();
-
-        $nowMonth = date('m');
         
         foreach($users as $user){
-            if(!strcmp($user->paid_at, '')){
-                $user->paid_at = 'X';
-            } else {
-                $paid_at = date('m', strtotime($user->paid_at));
-                if(strcmp($paid_at, $nowMonth)){
-                    $user->paid_at = 'X';
-                } else {
-                    $user->paid_at = 'O';
-                }
-            }
+            $this->checkPayment($user);
         }
-
         return response()->json($users, Response::HTTP_OK);
     }
 
@@ -89,6 +77,7 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
+        $this->checkPayment($user);
         return response()->json($user, Response::HTTP_OK);
     }
 
@@ -169,6 +158,9 @@ class UserController extends Controller
         
         $result = DB::select(DB::raw($query));
 
+        foreach($result as $user){
+            $this->checkPayment($user);
+        }
         return response()->json($result, Response::HTTP_OK);
     }
 
@@ -192,5 +184,20 @@ class UserController extends Controller
         $user->save();
 
         return response()->json($user, Response::HTTP_OK);
+    }
+
+    public function checkPayment($user){
+        $nowMonth = date('m');
+
+        if(!strcmp($user->paid_at, '')){
+            $user->paid_at = 'X';
+        } else {
+            $paid_at = date('m', strtotime($user->paid_at));
+            if(strcmp($paid_at, $nowMonth)){
+                $user->paid_at = 'X';
+            } else {
+                $user->paid_at = 'O';
+            }
+        }
     }
 }
