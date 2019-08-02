@@ -13,7 +13,7 @@ class Membershipfee extends Migration
      */
     public function up()
     {
-        Schema::create('membershipFee', function (Blueprint $table) {
+        Schema::create('membershipfee', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('user')->unsigned();
             $table->datetime('paid_at');

@@ -43,6 +43,11 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             $router->get('/rollback/{id}', 'BackupController@rollback');
             $router->delete('/{id}', 'BackupController@destroy');
         });
+
+        $router->group(['prefix' => 'fee'], function () use ($router) {
+            $router->get('/{year}', 'MembershipFeeController@show');
+            $router->get('/payment/{id}', 'MembershipFeeController@payment');
+        });
     });
 
     $router->post('/auth/login', 'AuthController@authenticate'); 
