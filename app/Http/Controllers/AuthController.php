@@ -101,6 +101,12 @@ class AuthController extends BaseController
     public function index(Request $request){
         $accounts = Auth::all();
 
+        foreach($accounts as $account){
+            for($i = 3; $i < strlen($account->account); $i++) {
+                $account->account = substr_replace($account->account, '*', $i, 1);
+            }
+        }
+
         return response()->json($accounts, Response::HTTP_OK);
     }
 }
