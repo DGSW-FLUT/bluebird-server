@@ -184,4 +184,13 @@ class UserController extends Controller
 
         return response()->json(["increase" => $increase->increase, "decrease" => $decrease->decrease], Response::HTTP_OK);
     }
+
+    public function payment(Request $request, $id){
+        $user = User::findOrFail($id);
+
+        $user->paid_at = date('Y-m-d H:i:s');
+        $user->save();
+
+        return response()->json($user, Response::HTTP_OK);
+    }
 }

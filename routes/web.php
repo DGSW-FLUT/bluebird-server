@@ -12,6 +12,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             $router->get('/change','UserController@showChange');
             $router->get('/search', 'UserController@search');
             $router->get('/count', 'UserController@count');
+            $router->patch('/payment/{id}', 'UserController@payment');
             $router->get('/{id}', 'UserController@show');
             $router->patch('/{id}', 'UserController@update');
             $router->delete('/{id}', 'UserController@destroy');
