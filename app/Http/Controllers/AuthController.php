@@ -56,7 +56,7 @@ class AuthController extends BaseController
         }
         // Bad Request response
         return response()->json([
-            'error' => 'Account or password is wrong.'
+            'error' => 'password is wrong.'
         ], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
@@ -84,7 +84,8 @@ class AuthController extends BaseController
         $result = Auth::where('account', $input['account'])->first();
         if($result){
             return response()->json([
-                'error' => 'Account already exist.'
+                'error' => 'Account already exist.',
+                'code' => '0'
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         
