@@ -11,17 +11,20 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class BackupController extends Controller 
+class BackupController extends Controller
 {
-    public function save(Request $request) 
+    public function save(Request $request)
     {
         $snapshot = new SnapShot();
 
         $user_data = User::withTrashed()->get();
 
-        $snapshot->dump_data = json_encode($user_data);
+        $dump_data = openssl_encrypt(json_encode($user_data), 'aes-256-cbc', env('SECRET_KEY'), false, str_repeat(chr(0), 16));
+        $snapshot->dump_data = $dump_data;
 
         $snapshot->save();
+
+        $snapshot->dump_data = openssl_decrypt($dump_data, 'aes-256-cbc', env('SECRET_KEY'), false, str_repeat(chr(0), 16));
 
         return response()->json($snapshot, Response::HTTP_OK);
     }
@@ -32,7 +35,9 @@ class BackupController extends Controller
 
     public function rollback(Request $request, $id){
         $dump_data = Snapshot::findOrFail($id);
-        $dump_array = (array)json_decode($dump_data->dump_data);
+
+        $data = openssl_decrypt($dump_data->dump_data, 'aes-256-cbc', env('SECRET_KEY'), false, str_repeat(chr(0), 16));
+        $dump_array = (array)json_decode($data);
 
         User::truncate();
 
@@ -49,7 +54,7 @@ class BackupController extends Controller
             $user->created_at = $row->created_at;
             $user->updated_at = $row->updated_at;
             $user->deleted_at = $row->deleted_at;
-            
+
             $user->save();
         }
 
@@ -60,13 +65,17 @@ class BackupController extends Controller
     public function show(Request $request){
         $snapshots = Snapshot::all();
 
+        foreach($snapshots as $snapshot){
+            $data = openssl_decrypt($snapshot->dump_data, 'aes-256-cbc', env('SECRET_KEY'), false, str_repeat(chr(0), 16));
+            $snapshot->dump_data = $data;
+        }
         return response()->json($snapshots, Response::HTTP_OK);
     }
 
     public function destroy(Request $request, $id){
         $snapshot = Snapshot::findOrFail($id);
 
-        $snapshot->destroy();
+        $snapshot->delete();
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
     }

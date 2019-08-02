@@ -25,7 +25,10 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $users = User::all();
-
+        
+        foreach($users as $user){
+            $this->checkPayment($user);
+        }
         return response()->json($users, Response::HTTP_OK);
     }
 
@@ -44,15 +47,15 @@ class UserController extends Controller
     public function create(Request $request)
     {
         $user = new User();
-        $input = $request->only(['name', 'birth', 'zipCode', 'address', 'job', 'level', 'phoneNumber']);
+        $input = $request->only(['name', 'birth', 'zip_code', 'address', 'job', 'level', 'phone_number']);
 
         $user->name = trim($input['name']);
         $user->birth = trim($input['birth']);
-        $user->zip_code = trim($input['zipCode']);
+        $user->zip_code = trim($input['zip_code']);
         $user->address = trim($input['address']);
         $user->job = trim($input['job']);
         $user->level = trim($input['level']);
-        $user->phone_number = trim($input['phoneNumber']);
+        $user->phone_number = trim($input['phone_number']);
         
         $user->save();
 
@@ -74,13 +77,14 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
+        $this->checkPayment($user);
         return response()->json($user, Response::HTTP_OK);
     }
 
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
-        $input = $request->only(['name', 'birth', 'zipCode', 'address', 'job', 'level', 'phoneNumber']);
+        $input = $request->only(['name', 'birth', 'zip_code', 'address', 'job', 'level', 'phone_number']);
 
         if (parent::isDefined($input, 'name'))
         {
@@ -92,9 +96,9 @@ class UserController extends Controller
             $user->birth = trim($input['birth']);
         }
 
-        if (parent::isDefined($input, 'zipCode'))
+        if (parent::isDefined($input, 'zip_code'))
         {
-            $user->zip_code = trim($input['zipCode']);
+            $user->zip_code = trim($input['zip_code']);
         }
 
         if (parent::isDefined($input, 'address'))
@@ -112,9 +116,9 @@ class UserController extends Controller
             $user->level = trim($input['level']);
         }
 
-        if (parent::isDefined($input, 'phoneNumber'))
+        if (parent::isDefined($input, 'phone_number'))
         {
-            $user->phone_number = trim($input['phoneNumber']);
+            $user->phone_number = trim($input['phone_number']);
         }
 
         $user->save();
@@ -137,7 +141,7 @@ class UserController extends Controller
                                    ->groupBy('level')
                                    ->get();
         
-        return response()->json($count);
+        return response()->json($count, Response::HTTP_OK);
     }
 
     public function search(Request $request) {
@@ -154,6 +158,9 @@ class UserController extends Controller
         
         $result = DB::select(DB::raw($query));
 
+        foreach($result as $user){
+            $this->checkPayment($user);
+        }
         return response()->json($result, Response::HTTP_OK);
     }
 
@@ -168,5 +175,29 @@ class UserController extends Controller
                                       ->first();
 
         return response()->json(["increase" => $increase->increase, "decrease" => $decrease->decrease], Response::HTTP_OK);
+    }
+
+    public function payment(Request $request, $id){
+        $user = User::findOrFail($id);
+
+        $user->paid_at = date('Y-m-d H:i:s');
+        $user->save();
+
+        return response()->json($user, Response::HTTP_OK);
+    }
+
+    public function checkPayment($user){
+        $nowMonth = date('y');
+
+        if(!strcmp($user->paid_at, '')){
+            $user->paid_at = 'X';
+        } else {
+            $paid_at = date('y', strtotime($user->paid_at));
+            if(strcmp($paid_at, $nowMonth)){
+                $user->paid_at = 'X';
+            } else {
+                $user->paid_at = 'O';
+            }
+        }
     }
 }

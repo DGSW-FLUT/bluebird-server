@@ -18,7 +18,8 @@ class User extends Model
       'zip_code',
       'address',
       'job',
-      'level',
-      'phone_number'
+      'level',  
+      'phone_number',
+      'paid_at'
     ];
 }

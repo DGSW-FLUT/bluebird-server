@@ -18,6 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('level');
             $table->string('phone_number');
             $table->timestamps();
+            $table->dateTime('paid_at');
             $table->softDeletes();
         });
     }

@@ -46,47 +46,67 @@ class AuthController extends BaseController
             // below respose for now.
             return response()->json([
                 'error' => 'Account does not exist.'
-            ], 400);
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
         // Verify the password and generate the token
-        if ($user->password == $request->input('password')) {
+        if (password_verify($request->input('password'), $user->password)) {
             return response()->json([
                 'token' => $this->jwt($user)
-            ], 200);
+            ], Response::HTTP_OK);
         }
         // Bad Request response
         return response()->json([
             'error' => 'Account or password is wrong.'
-        ], 400);
+        ], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
-    public function update(Request $request, $id){
-        $user = Auth::findOrFail($id);
+    public function update(Request $request){
+        $user = Auth::findOrFail($request->auth->id);
 
-        $user->password = $request->input('password');
+        $user->password = password_hash($request->input('password'), PASSWORD_DEFAULT);
 
         $user->save();
 
         return response()->json($user, Response::HTTP_OK);
     }
 
-    public function delete(Request $request, $id){
+    public function destroy(Request $request, $id){
         $user = Auth::findOrFail($id);
         
-        $user->destroy();
+        $user->delete();
 
         return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 
     public function create(Request $request){
         $input = $request->only(['account', 'password']);
+
+        $result = Auth::where('account', $input['account'])->first();
+        if($result){
+            return response()->json([
+                'error' => 'Account already exist.'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+        
         $user = new Auth();
 
         $user->account = $input['account'];
-        $user->password = $input['password'];
+        $user->password = password_hash($input['password'], PASSWORD_DEFAULT);
         
         $user->save();
 
         return response()->json($user, Response::HTTP_OK);
+    }
+
+    public function index(Request $request){
+        $accounts = Auth::all();
+
+        foreach($accounts as $account){
+            for($i = 3; $i < strlen($account->account); $i++) {
+                $account->account = substr_replace($account->account, '*', $i, 1);
+            }
+        }
+
+        return response()->json($accounts, Response::HTTP_OK);
     }
 }

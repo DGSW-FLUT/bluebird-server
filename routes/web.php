@@ -12,6 +12,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             $router->get('/change','UserController@showChange');
             $router->get('/search', 'UserController@search');
             $router->get('/count', 'UserController@count');
+            $router->patch('/payment/{id}', 'UserController@payment');
             $router->get('/{id}', 'UserController@show');
             $router->patch('/{id}', 'UserController@update');
             $router->delete('/{id}', 'UserController@destroy');
@@ -20,7 +21,8 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         $router->group(['prefix' => 'messages'], function () use ($router) {
             $router->get('/', 'MessageController@index');
             $router->post('/', 'MessageController@create');
-            $router->post('/send', 'MessageController@send');
+            $router->post('/send/sms', 'MessageController@sendSMS');
+            $router->post('/send/mms', 'MessageController@sendMMS');
             $router->get('/count', 'MessageController@count');
             $router->get('/{id}', 'MessageController@show');
             $router->patch('/{id}', 'MessageController@update');
@@ -28,8 +30,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
         });     
 
         $router->group(['prefix' => 'auth'], function () use ($router) {
+            $router->get('/', 'AuthController@index');
             $router->post('/', 'AuthController@create');
-            $router->patch('/{id}', 'AuthController@update');
+            $router->patch('/', 'AuthController@update');
             $router->delete('/{id}', 'AuthController@destroy');
         });
         
