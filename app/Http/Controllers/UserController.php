@@ -26,6 +26,21 @@ class UserController extends Controller
     {
         $users = User::all();
 
+        $nowMonth = date('m');
+        
+        foreach($users as $user){
+            if(!strcmp($user->paid_at, '')){
+                $user->paid_at = 'X';
+            } else {
+                $paid_at = date('m', strtotime($user->paid_at));
+                if(strcmp($paid_at, $nowMonth)){
+                    $user->paid_at = 'X';
+                } else {
+                    $user->paid_at = 'O';
+                }
+            }
+        }
+
         return response()->json($users, Response::HTTP_OK);
     }
 
