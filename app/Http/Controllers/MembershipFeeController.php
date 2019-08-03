@@ -24,7 +24,7 @@ class MembershipFeeController extends Controller
         $to = $year+1;
         
         $fee = MembershipFee::where('paid_at', '>', date($from.'-01-01'))->where('paid_at', '<', date($to.'-01-01'))->pluck('user')->toArray();
-        $users = User::all();
+        $users = User::all('id','name');
         
         foreach($users as $user){
             if(in_array($user->id, $fee)){
