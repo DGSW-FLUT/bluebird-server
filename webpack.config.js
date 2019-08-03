@@ -33,11 +33,7 @@ const config = {
             }
         ],
 
-    },
-    devServer: {
-        contentBase: __dirname + '/public/js'
-    },
-    devtool: "eval-source-map"
+    }
 };
 
 module.exports = config;

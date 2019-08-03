@@ -6,7 +6,6 @@ git -C ../bluebird-client pull --force
 
 rm -rf resources/client
 cp ../bluebird-client/src/ resources/client -r
-yarn
-yarn build
+yarn build &
 
 # update composer
