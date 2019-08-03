@@ -7,3 +7,4 @@ Homestead.yaml
 public/swagger-ui-assets
 resources/views/vendor/swagger-lume/index.blade.php
 storage/api-docs
+node_modules
