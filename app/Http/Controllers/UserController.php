@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use Illuminate\Http\Validator;
 use Illuminate\Support\Facades\DB;
 use App\User;
+use App\MembershipFee;
 
 class UserController extends Controller
 {
@@ -187,17 +188,12 @@ class UserController extends Controller
     }
 
     public function checkPayment($user){
-        $nowMonth = date('y');
+        $paid = MembershipFee::where('user', '=', $user->id)->where('paid_at', '>', date("Y-01-01"))->first();
 
-        if(!strcmp($user->paid_at, '')){
+        if($paid){
+            $user->paid_at = 'O';
+        }else{
             $user->paid_at = 'X';
-        } else {
-            $paid_at = date('y', strtotime($user->paid_at));
-            if(strcmp($paid_at, $nowMonth)){
-                $user->paid_at = 'X';
-            } else {
-                $user->paid_at = 'O';
-            }
         }
     }
 }

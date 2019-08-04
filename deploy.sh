@@ -2,9 +2,10 @@
 
 # update source code
 git pull origin master --force
+git -C ../bluebird-client pull --force
 
-# generate swagger assets
-php artisan swagger-lume:publish
-php artisan swagger-lume:generate
+rm -rf resources/client
+cp ../bluebird-client/src/ resources/client -r
+yarn build &
 
 # update composer
