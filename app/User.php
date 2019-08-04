@@ -19,7 +19,6 @@ class User extends Model
       'address',
       'job',
       'level',  
-      'phone_number',
-      'paid_at'
+      'phone_number'
     ];
 }
