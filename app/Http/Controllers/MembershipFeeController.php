@@ -11,12 +11,22 @@ use Illuminate\Support\Facades\DB;
 class MembershipFeeController extends Controller
 {
     public function payment(Request $request, $id){
-        $fee = new MembershipFee();
+        $type = $this->request->input('value');
 
-        $fee->user = $id;
-        $fee->save();
+        if(strcmp($type, 'true')){
+            $fee = new MembershipFee();
 
-        return response()->json($fee, Response::HTTP_OK);
+            $fee->user = $id;
+            $fee->save();
+
+            return response()->json($fee, Response::HTTP_OK);
+        } else if (strcmp($type, 'false')){
+            $fee = MembershipFee::where('paid_at', '>', date('Y-01-01'))->get();
+
+            $fee->delete();
+
+            return response()->json([], Response::HTTP_NO_CONTENT);
+        }
     }
 
     public function show(Request $request, $year){

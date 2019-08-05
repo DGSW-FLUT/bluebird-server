@@ -47,7 +47,7 @@ $router->group(['prefix' => 'api'], function () use ($router) {
 
         $router->group(['prefix' => 'fee'], function () use ($router) {
             $router->get('/{year}', 'MembershipFeeController@show');
-            $router->get('/payment/{id}', 'MembershipFeeController@payment');
+            $router->patch('/payment/{id}', 'MembershipFeeController@payment');
         });
     });
 
