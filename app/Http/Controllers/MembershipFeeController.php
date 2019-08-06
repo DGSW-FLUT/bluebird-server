@@ -13,14 +13,14 @@ class MembershipFeeController extends Controller
     public function payment(Request $request, $id){
         $type = $request->input('value');
 
-        if($type == 'true'){
+        if($type == 'false'){
             $fee = new MembershipFee();
 
             $fee->user = $id;
             $fee->save();
 
             return response()->json($fee, Response::HTTP_OK);
-        } else if ($type == 'false'){
+        } else if ($type == 'true'){
             $fee = MembershipFee::where('paid_at', '>', date('Y-01-01'))->where('user', '=', $id)->firstOrFail();
             $fee->delete();
 
