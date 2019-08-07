@@ -14,7 +14,6 @@ class MembershipFeeController extends Controller
         $type = $request->input('value');
 
         if(!$type){
-            echo 'value is false';
             $fee = new MembershipFee();
 
             $fee->user = $id;
@@ -22,7 +21,6 @@ class MembershipFeeController extends Controller
 
             return response()->json($fee, Response::HTTP_OK);
         } else {
-            echo 'value is true';
             $fee = MembershipFee::where('paid_at', '>', date('Y-01-01'))->where('user', '=', $id)->firstOrFail();
             $fee->delete();
 
