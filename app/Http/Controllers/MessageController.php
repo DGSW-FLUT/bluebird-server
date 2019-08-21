@@ -66,11 +66,54 @@ class MessageController extends Controller
         return response()->json(['count' => $count]);
     }
 
+    public function testFile(Request $request) {
+        define('MULTIPART_BOUNDARY', '--------------------------'.microtime(true));
+        define('FORM_FIELD', 'attachFile');
+
+        $requestFile = $request->file('request_file');
+        $file_contents = file_get_contents($requestFile);
+        $filename = $requestFile->getClientOriginalName();
+
+        $content =  "--".MULTIPART_BOUNDARY."\r\n".
+                    "Content-Disposition: form-data; name=\"".FORM_FIELD."\"; filename=\"".basename($filename)."\"\r\n".
+                    "Content-Type: application/zip\r\n\r\n".
+                    $file_contents."\r\n";
+
+        $content .= "--".MULTIPART_BOUNDARY."--\r\n";
+
+        $url = "https://api-sms.cloud.toast.com/sms/v2.2/appKeys/".env('MESSAGE_API_KEY').'/requests/attachFiles/authDocuments';
+
+        $options = array(
+            'http' => array(
+                'method'  => 'POST',
+                'header'  => "Content-Type: multipart/form-data;boundary=".MULTIPART_BOUNDARY.";charset=UTF-8\r\n",
+                'content' => $content
+            )
+        );
+
+        $context  = stream_context_create($options);
+
+        $result = file_get_contents($url, false, $context);
+
+        return response()->json($result);
+    }
+
     public function registerNumber(Request $request) {
-        $requestNum = str_replace("-","",$request->input('request_num'));
+
+        $this->validate($request, [
+            'request_num' => 'required',
+            'request_file' => 'required'
+        ]);
+
+        define('MULTIPART_BOUNDARY', '--------------------------'.microtime(true));
+        define('FORM_FIELD', 'attachFile');
+
+        $input = $request->only(['request_num', 'request_file']);
+        
+        $requestNum = str_replace("-","",$input['request_num']);
         $comment = $request->input('comment');
 
-        $url = "/sms/v2.2/appKeys/".env('MESSAGE_API_KEY').'/reqeusts/sendNos';
+        $url = "https://api-sms.cloud.toast.com/sms/v2.2/appKeys/".env('MESSAGE_API_KEY').'/reqeusts/sendNos';
         $data = array(
                     "sendNos" => array($requestNum),
                     "comment" => $comment
@@ -97,6 +140,39 @@ class MessageController extends Controller
         if ($resultCode != 0) {
             return response()->json(["status" => 500, "message" => '[CODE]'.$resultCode.' NUMBER REGISTER ERROR'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+
+        $requestFile = $input['request_file'];
+        $file_contents = file_get_contents($requestFile);
+        $filename = $requestFile->getClientOriginalName();
+
+        $content =  "--".MULTIPART_BOUNDARY."\r\n".
+                    "Content-Disposition: form-data; name=\"".FORM_FIELD."\"; filename=\"".basename($filename)."\"\r\n".
+                    "Content-Type: application/zip\r\n\r\n".
+                    $file_contents."\r\n";
+
+        $content .= "--".MULTIPART_BOUNDARY."--\r\n";
+
+        $url = "https://api-sms.cloud.toast.com/sms/v2.2/appKeys/".env('MESSAGE_API_KEY').'/requests/attachFiles/authDocuments';
+
+        $options = array(
+            'http' => array(
+                'method'  => 'POST',
+                'header'  => "Content-Type: multipart/form-data;boundary=".MULTIPART_BOUNDARY.";charset=UTF-8\r\n",
+                'content' => $content
+            )
+        );
+
+        $context  = stream_context_create($options);
+
+        $result = file_get_contents($url, false, $context);
+
+        if ($result === FALSE) {
+            return response()->json(["status" => 500, "message" => 'SERVER ERROR'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        $resultCode = json_decode($result, true)["header"]["resultCode"];
+
+        
 
         return response()->json(json_encode(["status" => 200, "message" => "NUMBER REGISTER SUCCESS"], JSON_UNESCAPED_UNICODE), Response::HTTP_OK);
     }
