@@ -22,8 +22,9 @@ $router->group(['prefix' => 'api'], function () use ($router) {
             $router->get('/numbers', 'MessageController@getNumbers');
             $router->get('/count', 'MessageController@count');
             $router->get('/{id}', 'MessageController@show');
+            $router->get('/requests/numbers', 'MessageController@getRequestNumbers');
             $router->post('/', 'MessageController@create');
-            $router->post('/numbers', 'MessageController@registerNumber');
+            $router->post('/requests/numbers', 'MessageController@registerNumber');
             $router->post('/send/sms', 'MessageController@sendSMS');
             $router->post('/send/mms', 'MessageController@sendMMS');
             $router->patch('/{id}', 'MessageController@update');

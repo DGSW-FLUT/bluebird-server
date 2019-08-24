@@ -98,6 +98,36 @@ class MessageController extends Controller
         return response()->json($result);
     }
 
+    public function getRequestNumbers(Request $request) {
+        $pageNum = $request->query('pageNum', 1);
+        $url = "https://api-sms.cloud.toast.com/sms/v2.2/appKeys/".env('MESSAGE_API_KEY').'/requests/sendNos?pageNum='.$pageNum;
+
+        $options = array(
+            'http' => array(
+                'header'  => "Content-Type: application/json;charset=UTF-8\r\n",
+                'method'  => 'GET'
+            )
+        );
+
+        $context  = stream_context_create($options);
+
+        $result = file_get_contents($url, false, $context);
+
+        if ($result === FALSE) {
+            return response()->json(["status" => 500, "message" => 'SERVER ERROR'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        $resultCode = json_decode($result, true)["header"]["resultCode"];
+
+        if ($resultCode != 0) {
+            return response()->json(["status" => 500, "message" => '[CODE]'.$resultCode.' GET REQUEST NUMBERS ERROR'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        $resultData = json_decode($result, true)["body"]["data"];
+
+        return response()->json(json_encode(["status" => 200, "message" => "GET REQEUST NUMBERS SUCCESS", "data" => $resultData], JSON_UNESCAPED_UNICODE), Response::HTTP_OK);
+    }
+
     public function registerNumber(Request $request) {
 
         $this->validate($request, [
@@ -180,7 +210,8 @@ class MessageController extends Controller
 
     public function getNumbers(Request $request)
     {
-        $url = "https://api-sms.cloud.toast.com/sms/v2.2/appKeys/".env('MESSAGE_API_KEY').'/sendNos';
+        $pageNum = $request->query('pageNum', 1);
+        $url = "https://api-sms.cloud.toast.com/sms/v2.2/appKeys/".env('MESSAGE_API_KEY').'/sendNos?useYn=Y&pageNum='.$pageNum;
 
         $options = array(
             'http' => array(
