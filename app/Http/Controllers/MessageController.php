@@ -66,38 +66,6 @@ class MessageController extends Controller
         return response()->json(['count' => $count]);
     }
 
-    public function testFile(Request $request) {
-        define('MULTIPART_BOUNDARY', '--------------------------'.microtime(true));
-        define('FORM_FIELD', 'attachFile');
-
-        $requestFile = $request->file('request_file');
-        $file_contents = file_get_contents($requestFile);
-        $filename = $requestFile->getClientOriginalName();
-
-        $content =  "--".MULTIPART_BOUNDARY."\r\n".
-                    "Content-Disposition: form-data; name=\"".FORM_FIELD."\"; filename=\"".basename($filename)."\"\r\n".
-                    "Content-Type: application/zip\r\n\r\n".
-                    $file_contents."\r\n";
-
-        $content .= "--".MULTIPART_BOUNDARY."--\r\n";
-
-        $url = "https://api-sms.cloud.toast.com/sms/v2.2/appKeys/".env('MESSAGE_API_KEY').'/requests/attachFiles/authDocuments';
-
-        $options = array(
-            'http' => array(
-                'method'  => 'POST',
-                'header'  => "Content-Type: multipart/form-data;boundary=".MULTIPART_BOUNDARY.";charset=UTF-8\r\n",
-                'content' => $content
-            )
-        );
-
-        $context  = stream_context_create($options);
-
-        $result = file_get_contents($url, false, $context);
-
-        return response()->json($result);
-    }
-
     public function getRequestNumbers(Request $request) {
         $pageNum = $request->query('pageNum', 1);
         $url = "https://api-sms.cloud.toast.com/sms/v2.2/appKeys/".env('MESSAGE_API_KEY').'/requests/sendNos?pageNum='.$pageNum;
@@ -241,8 +209,15 @@ class MessageController extends Controller
 
     public function sendSMS(Request $request)
     {
+        $this->validate($request, [
+            'message' => 'required',
+            'recipients' => 'required',
+            'sendNo' => 'required'
+        ]);
+
         $message = $request->input('message');
         $recipients = $request->input('recipients');
+        $sendNo = $request->input('sendNo');
 
         $recipientNos = array();
 
@@ -251,7 +226,7 @@ class MessageController extends Controller
 
         $url = "https://api-sms.cloud.toast.com/sms/v2.1/appKeys/".env('MESSAGE_API_KEY').'/sender/sms';
         $data = array('body' => $message, 
-                      'sendNo' => env('MESSAGE_SEND_NUMBER'),
+                      'sendNo' => $sendNo,
                       'recipientList' => $recipientNos
                     );
 
@@ -282,8 +257,15 @@ class MessageController extends Controller
 
     public function sendMMS(Request $request)
     {
+        $this->validate($request, [
+            'message' => 'required',
+            'recipients' => 'required',
+            'sendNo' => 'required'
+        ]);
+
         $message = $request->input('message');
         $recipients = $request->input('recipients');
+        $sendNo = $request->input('sendNo');
 
         $recipientNos = array();
 
@@ -294,7 +276,7 @@ class MessageController extends Controller
         $data = array(
                       'title' => "2·28민주운동기념사업회",
                       'body' => $message, 
-                      'sendNo' => env('MESSAGE_SEND_NUMBER'),
+                      'sendNo' => $sendNo,
                       'recipientList' => $recipientNos
                     );
 
