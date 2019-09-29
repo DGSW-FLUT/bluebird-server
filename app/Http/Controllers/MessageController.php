@@ -107,37 +107,6 @@ class MessageController extends Controller
         define('FORM_FIELD', 'attachFile');
 
         $input = $request->only(['request_num', 'request_file']);
-        
-        $requestNum = str_replace("-","",$input['request_num']);
-        $comment = $request->input('comment');
-
-        $url = "https://api-sms.cloud.toast.com/sms/v2.2/appKeys/".env('MESSAGE_API_KEY').'/reqeusts/sendNos';
-        $data = array(
-                    "sendNos" => array($requestNum),
-                    "comment" => $comment
-                );
-
-        $options = array(
-            'http' => array(
-                'header'  => "Content-Type: application/json;charset=UTF-8\r\n",
-                'method'  => 'POST',
-                'content' => json_encode($data)
-            )
-        );
-
-        $context  = stream_context_create($options);
-
-        $result = file_get_contents($url, false, $context);
-
-        if ($result === FALSE) {
-            return response()->json(["status" => 500, "message" => 'SERVER ERROR'], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-
-        $resultCode = json_decode($result, true)["header"]["resultCode"];
-
-        if ($resultCode != 0) {
-            return response()->json(["status" => 500, "message" => '[CODE]'.$resultCode.' NUMBER REGISTER ERROR'], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
 
         $requestFile = $input['request_file'];
         $file_contents = file_get_contents($requestFile);
@@ -170,7 +139,43 @@ class MessageController extends Controller
 
         $resultCode = json_decode($result, true)["header"]["resultCode"];
 
-        
+        if ($resultCode != 0) {
+            return response()->json(["status" => 500, "message" => '[CODE]'.$resultCode.' FILE UPLOAD ERROR'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        $fileId = json_decode($result, true)["header"]["file"]["fileId"];
+
+        $requestNum = str_replace("-","",$input['request_num']);
+        $comment = $request->input('comment');
+
+        $url = "https://api-sms.cloud.toast.com/sms/v2.2/appKeys/".env('MESSAGE_API_KEY').'/reqeusts/sendNos';
+        $data = array(
+                    "sendNos" => array($requestNum),
+                    "comment" => $comment,
+                    "fileIds" => array($fileId)
+                );
+
+        $options = array(
+            'http' => array(
+                'header'  => "Content-Type: application/json;charset=UTF-8\r\n",
+                'method'  => 'POST',
+                'content' => json_encode($data)
+            )
+        );
+
+        $context  = stream_context_create($options);
+
+        $result = file_get_contents($url, false, $context);
+
+        if ($result === FALSE) {
+            return response()->json(["status" => 500, "message" => 'SERVER ERROR'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        $resultCode = json_decode($result, true)["header"]["resultCode"];
+
+        if ($resultCode != 0) {
+            return response()->json(["status" => 500, "message" => '[CODE]'.$resultCode.' NUMBER REGISTER ERROR'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
         return response()->json(json_encode(["status" => 200, "message" => "NUMBER REGISTER SUCCESS"], JSON_UNESCAPED_UNICODE), Response::HTTP_OK);
     }

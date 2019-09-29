@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use Illuminate\Http\Validator;
 use Illuminate\Support\Facades\DB;
 use App\User;
+use App\Career;
 use App\MembershipFee;
 
 class UserController extends Controller
@@ -26,8 +27,9 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $users = User::all();
-        
+
         foreach($users as $user){
+            $user->careers;
             $this->checkPayment($user);
         }
         return response()->json($users, Response::HTTP_OK);
@@ -48,7 +50,7 @@ class UserController extends Controller
     public function create(Request $request)
     {
         $user = new User();
-        $input = $request->only(['name', 'birth', 'zip_code', 'address', 'job', 'level', 'phone_number']);
+        $input = $request->only(['name', 'birth', 'zip_code', 'address', 'job', 'level', 'phone_number', 'education']);
 
         $user->name = trim($input['name']);
         $user->birth = trim($input['birth']);
@@ -57,9 +59,20 @@ class UserController extends Controller
         $user->job = trim($input['job']);
         $user->level = trim($input['level']);
         $user->phone_number = trim($input['phone_number']);
+        $user->education = trim($input['education']);
         
         $user->save();
 
+        $careers = $request->input('careers');
+
+        foreach($careers as $request) {
+            $career = new Career();
+            $career->user = $user->id;
+            $career->content = $request;
+            $career->save();
+        }
+
+        $user->careers;
         return response()->json($user, Response::HTTP_CREATED);
     }
     /**
@@ -77,6 +90,7 @@ class UserController extends Controller
     public function show(Request $request, $id)
     {
         $user = User::findOrFail($id);
+        $user->careers;
 
         $this->checkPayment($user);
         return response()->json($user, Response::HTTP_OK);
@@ -85,7 +99,7 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
-        $input = $request->only(['name', 'birth', 'zip_code', 'address', 'job', 'level', 'phone_number']);
+        $input = $request->only(['name', 'birth', 'zip_code', 'address', 'job', 'level', 'phone_number', 'education']);
 
         if (parent::isDefined($input, 'name'))
         {
@@ -122,6 +136,11 @@ class UserController extends Controller
             $user->phone_number = trim($input['phone_number']);
         }
 
+        if (parent::isDefined($input, 'education'))
+        {
+            $user->education = trim($input['education']);
+        }
+
         $user->save();
 
         return response()->json($user, Response::HTTP_OK);
@@ -129,9 +148,29 @@ class UserController extends Controller
 
     public function destroy(Request $request, $id)
     {
+        Career::where('user', '=', $id)->delete();
+
         $user = User::findOrFail($id);
         $user->delete();
 
+        return response()->json([], Response::HTTP_NO_CONTENT);
+    }
+    
+    public function addCareer(Request $request, $id) {
+        $career = new Career();
+
+        $career->user = $id;
+        $career->content = $request->input('career');
+
+        $career->save();
+
+        return response()->json($career, Response::HTTP_OK);
+    }
+
+    public function deleteCareer(Request $request, $id) {
+        $career = Career::findOrFail($id);
+        $career->delete();
+        
         return response()->json([], Response::HTTP_NO_CONTENT);
     }
 
