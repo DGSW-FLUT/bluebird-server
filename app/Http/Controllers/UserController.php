@@ -200,6 +200,7 @@ class UserController extends Controller
         $result = DB::select(DB::raw($query));
 
         foreach($result as $user){
+            $user->careers;
             $this->checkPayment($user);
         }
         return response()->json($result, Response::HTTP_OK);
