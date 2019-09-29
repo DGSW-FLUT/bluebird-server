@@ -19,6 +19,11 @@ class User extends Model
       'address',
       'job',
       'level',  
-      'phone_number'
+      'phone_number',
+      'education'
     ];
+
+    public function careers() {
+      return $this->hasMany('App\Career', 'user', 'id');
+    }
 }

@@ -17,6 +17,7 @@ class CreateUsersTable extends Migration
             $table->string('job');
             $table->string('level');
             $table->string('phone_number');
+            $table->string('education');
             $table->timestamps();
             $table->softDeletes();
         });
