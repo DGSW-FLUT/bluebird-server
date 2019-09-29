@@ -143,6 +143,7 @@ class UserController extends Controller
 
         $user->save();
 
+        $user->careers;
         return response()->json($user, Response::HTTP_OK);
     }
 
