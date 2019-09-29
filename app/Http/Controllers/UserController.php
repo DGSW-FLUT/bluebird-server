@@ -29,7 +29,6 @@ class UserController extends Controller
         $users = User::all();
 
         foreach($users as $user){
-            $user->careers;
             $this->checkPayment($user);
         }
         return response()->json($users, Response::HTTP_OK);
