@@ -29,6 +29,7 @@ class UserController extends Controller
         $users = User::all();
 
         foreach($users as $user){
+            $user->careers;
             $this->checkPayment($user);
         }
         return response()->json($users, Response::HTTP_OK);
@@ -59,7 +60,7 @@ class UserController extends Controller
         $user->level = trim($input['level']);
         $user->phone_number = trim($input['phone_number']);
         $user->education = trim($input['education']);
-        
+
         $user->save();
 
         $careers = $request->input('careers');
@@ -154,7 +155,7 @@ class UserController extends Controller
 
         return response()->json([], Response::HTTP_NO_CONTENT);
     }
-    
+
     public function addCareer(Request $request, $id) {
         $career = new Career();
 
@@ -169,17 +170,17 @@ class UserController extends Controller
     public function deleteCareer(Request $request, $id) {
         $career = Career::findOrFail($id);
         $career->delete();
-        
+
         return response()->json([], Response::HTTP_NO_CONTENT);
     }
 
-    public function count(Request $request) 
+    public function count(Request $request)
     {
         $count = DB::table('users')->select(DB::raw('level, COUNT(*) as count'))
                                    ->where('deleted_at', '=', null)
                                    ->groupBy('level')
                                    ->get();
-        
+
         return response()->json($count, Response::HTTP_OK);
     }
 
@@ -194,7 +195,7 @@ class UserController extends Controller
             $query .= " AND name LIKE '%".$request->get('name')."%'";
         if (!empty($request->get('level')))
             $query .= " AND level LIKE '%".$request->get('level')."%'";
-        
+
         $result = DB::select(DB::raw($query));
 
         foreach($result as $user){
