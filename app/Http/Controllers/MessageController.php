@@ -67,8 +67,7 @@ class MessageController extends Controller
     }
 
     public function getRequestNumbers(Request $request) {
-        $pageNum = $request->query('pageNum', 1);
-        $url = "https://api-sms.cloud.toast.com/sms/v2.2/appKeys/".env('MESSAGE_API_KEY').'/requests/sendNos?pageNum='.$pageNum;
+        $url = "https://api-sms.cloud.toast.com/sms/v2.2/appKeys/".env('MESSAGE_API_KEY').'/requests/sendNos?pageSize=9999999';
 
         $options = array(
             'http' => array(
