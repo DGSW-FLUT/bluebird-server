@@ -144,7 +144,7 @@ class MessageController extends Controller
         }
 
         print_r(json_decode($result, true));
-        $fileId = json_decode($result, true)["file"]["fileId"];
+        $fileId = json_decode($result, true)["body"]["data"]["fileId"];
 
         $requestNum = str_replace("-","",$input['request_num']);
         $comment = $request->input('comment');
