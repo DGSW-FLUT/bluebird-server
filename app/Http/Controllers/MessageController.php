@@ -143,8 +143,7 @@ class MessageController extends Controller
             return response()->json(["status" => 500, "message" => '[CODE]'.$resultCode.' FILE UPLOAD ERROR'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        print_r(json_decode($result, true)["header"]);
-        $fileId = json_decode($result, true)["header"]["file"]["fileId"];
+        $fileId = json_decode($result, true)["file"]["fileId"];
 
         $requestNum = str_replace("-","",$input['request_num']);
         $comment = $request->input('comment');
