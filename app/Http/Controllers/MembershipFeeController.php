@@ -14,10 +14,17 @@ class MembershipFeeController extends Controller
         $type = $request->input('value');
 
         if(!$type){
-            $fee = new MembershipFee();
+            $fee = MembershipFee::where('user', '=', $id)->get();
+        
+            if(!$fee){
+                $fee = new MembershipFee();
 
-            $fee->user = $id;
-            $fee->save();
+                $fee->user = $id;
+                $fee->save();
+            }else{
+                $fee->paid_at = date("Y-m-d H:i:s");
+                $fee->save();
+            }
 
             return response()->json($fee, Response::HTTP_OK);
         } else {
