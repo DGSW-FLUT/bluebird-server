@@ -21,7 +21,8 @@ class MembershipFeeController extends Controller
 
                 $fee->user = $id;
                 $fee->save();
-            }else{
+            } else {
+                $fee = MembershipFee::where('user', '=', $id)->get();
                 $fee->paid_at = date("Y-m-d H:i:s");
                 $fee->save();
             }
