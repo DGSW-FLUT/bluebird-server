@@ -10,12 +10,9 @@ class MembershipFee extends Model
     protected $primaryKey = 'id';
     public $timestamps = ['created_at'];
     const CREATED_AT = 'paid_at';
+    const UPDATED_AT = null;
 
     protected $fillable = [
         'user'
     ];
-
-    public function setUpdatedAt($value){
-        return $this;
-    }
 }

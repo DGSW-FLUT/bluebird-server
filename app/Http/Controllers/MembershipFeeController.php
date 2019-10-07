@@ -14,7 +14,7 @@ class MembershipFeeController extends Controller
         $type = $request->input('value');
 
         if(!$type){
-            $fee = MembershipFee::where('user', '=', $id)->get();
+            $fee = MembershipFee::where('user', '=', $id)->first();
         
             if(!$fee){
                 $fee = new MembershipFee();
@@ -22,7 +22,6 @@ class MembershipFeeController extends Controller
                 $fee->user = $id;
                 $fee->save();
             } else {
-                $fee = MembershipFee::where('user', '=', $id)->get();
                 $fee->paid_at = date("Y-m-d H:i:s");
                 $fee->save();
             }
