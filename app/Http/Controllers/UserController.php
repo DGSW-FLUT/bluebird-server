@@ -50,7 +50,7 @@ class UserController extends Controller
     public function create(Request $request)
     {
         $user = new User();
-        $input = $request->only(['name', 'birth', 'zip_code', 'address', 'job', 'level', 'phone_number', 'education']);
+        $input = $request->only(['name', 'birth', 'zip_code', 'address', 'job', 'level', 'phone_number', 'education', 'gender', 'attendance_fee', 'agree']);
 
         $user->name = trim($input['name']);
         $user->birth = trim($input['birth']);
@@ -60,6 +60,9 @@ class UserController extends Controller
         $user->level = trim($input['level']);
         $user->phone_number = trim($input['phone_number']);
         $user->education = trim($input['education']);
+        $user->gender = trim($input['gender']);
+        $user->attendance_fee = trim($input['attendance_fee']);
+        $user->agree = trim($input['agree']);
 
         $user->save();
 
@@ -139,6 +142,21 @@ class UserController extends Controller
         if (parent::isDefined($input, 'education'))
         {
             $user->education = trim($input['education']);
+        }
+
+        if (parent::isDefined($input, 'gender'))
+        {
+            $user->gender = trim($input['gender']);
+        }
+
+        if (parent::isDefined($input, 'attendance_fee'))
+        {
+            $user->attendance_fee = trim($input['attendance_fee']);
+        }
+
+        if (parent::isDefined($input, 'agree'))
+        {
+            $user->agree = trim($input['agree']);
         }
 
         $user->save();
