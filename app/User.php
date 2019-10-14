@@ -20,7 +20,10 @@ class User extends Model
       'job',
       'level',  
       'phone_number',
-      'education'
+      'education',
+      'gender',
+      'attendance_fee',
+      'agree'
     ];
 
     public function careers() {

@@ -18,6 +18,9 @@ class CreateUsersTable extends Migration
             $table->string('level');
             $table->string('phone_number');
             $table->string('education');
+            $table->string('gender');
+            $table->integer('attendance_fee');
+            $table->string('agree');
             $table->timestamps();
             $table->softDeletes();
         });
